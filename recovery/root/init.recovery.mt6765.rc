@@ -16,3 +16,15 @@ on post-fs
     symlink /dev/block/mmcblk0boot1 /dev/block/platform/bootdevice/by-name/preloader_b
 
     exec u:r:update_engine:s0 root root -- /system/bin/mtk_plpath_utils
+
+on post-fs
+    mkdir /mnt/vendor/efs 0771 system system
+    mount ext4 /dev/block/platform/bootdevice/by-name/efs /mnt/vendor/efs ro
+    mkdir /mnt/vendor/efs/DAK 0775 system system
+    restorecon -R /mnt/vendor/efs/DAK
+
+service vendor.keymint-default /vendor/bin/hw/android.hardware.security.keymint-service
+    class early_hal
+    user system
+    group system drmrpc
+
